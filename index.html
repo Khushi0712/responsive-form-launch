@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>responsive-form-launch</title>
+    <meta name="description" content="Lovable Generated Project" />
+    <meta name="author" content="Lovable" />
+
+    <meta property="og:title" content="responsive-form-launch" />
+    <meta property="og:description" content="Lovable Generated Project" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+  
+  <!-- Load Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+      const supabase = supabase.createClient(
+        'https://jciuscvxrmxxjnxultnn.supabase.co', // ✅ your project URL
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....'   // ✅ your anon public key
+      );
+    
+      window.addEventListener('DOMContentLoaded', function () {
+        document.getElementById("leadForm").addEventListener("submit", async function (e) {
+          e.preventDefault();
+    
+          const first_name = document.getElementById("first_name").value;
+          const last_name = document.getElementById("last_name").value;
+          const email = document.getElementById("email").value;
+          const gender = document.getElementById("gender").value;
+    
+          const { data, error } = await supabase
+            .from("form")
+            .insert([{ first_name, last_name, email, gender }]);
+    
+          if (error) {
+            alert("❌ Submission failed: " + error.message);
+            console.error(error);
+          } else {
+            alert("✅ Form submitted successfully!");
+            document.getElementById("leadForm").reset();
+          }
+        });
+      });
+    </script>
+
+
+    <script type="module" crossorigin src="/assets/index-Cp-2pZ14.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Bsr2CSRR.css">
+  </head>
+
+
+
+
+  <body>
+    <div id="root"></div>
+    
+    <form id="leadForm">
+      <input type="text" id="first_name" placeholder="First Name" required />
+      <input type="text" id="last_name" placeholder="Last Name" required />
+      <input type="email" id="email" placeholder="Email" required />
+      
+      <select id="gender" required>
+        <option value="">Select Gender</option>
+        <option value="Female">Female</option>
+        <option value="Male">Male</option>
+        <option value="Other">Other</option>
+        <option value="Prefer not to say">Prefer not to say</option>
+      </select>
+    
+      <button type="submit">Submit</button>
+    </form>
+
+
+  </body>
+</html>
