@@ -23,9 +23,35 @@
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjaXVzY3Z4cm14eGpueHVsdG5uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1Nzc1NTksImV4cCI6MjA2NzE1MzU1OX0.QB5BsKKFafSF_a9IsBa-aiydNSSkthhroWM7WL_J77U'
   );
 </script>
+  <script>
+  document.getElementById("leadForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+
+    const { data, error } = await supabase
+      .from("leads")
+      .insert([{ name, email }]);
+
+    if (error) {
+      alert("Error: " + error.message);
+    } else {
+      alert("Form submitted successfully!");
+      document.getElementById("leadForm").reset();
+    }
+  });
+</script>
+
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <form id="leadForm">
+  <input type="text" id="name" placeholder="Name" required />
+  <input type="email" id="email" placeholder="Email" required />
+  <button type="submit">Submit</button>
+</form>
+
   </body>
 </html>
