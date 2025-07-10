@@ -16,41 +16,34 @@
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
   
-  <!-- Load Supabase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script>
-      const supabase = supabase.createClient(
-        'https://jciuscvxrmxxjnxultnn.supabase.co', // ✅ your project URL
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....'   // ✅ your anon public key
-      );
-    
-      window.addEventListener('DOMContentLoaded', function () {
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+        const supabase = supabase.createClient(
+          'https://jciuscvxrmxxjnxultnn.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjaXVzY3Z4cm14eGpueHVsdG5uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1Nzc1NTksImV4cCI6MjA2NzE1MzU1OX0.QB5BsKKFafSF_a9IsBa-aiydNSSkthhroWM7WL_J77U'
+        );
+        window.addEventListener('DOMContentLoaded', function () {
         document.getElementById("leadForm").addEventListener("submit", async function (e) {
-          e.preventDefault();
-    
-          const first_name = document.getElementById("first_name").value;
-          const last_name = document.getElementById("last_name").value;
-          const email = document.getElementById("email").value;
-          const gender = document.getElementById("gender").value;
-    
-          const { data, error } = await supabase
-            .from("form")
-            .insert([{ first_name, last_name, email, gender }]);
-    
-          if (error) {
-            alert("❌ Submission failed: " + error.message);
-            console.error(error);
-          } else {
-            alert("✅ Form submitted successfully!");
-            document.getElementById("leadForm").reset();
-          }
-        });
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+
+        const { data, error } = await supabase
+          .from("leads")
+          .insert([{ name, email }]);
+
+        if (error) {
+          alert("Error: " + error.message);
+        } else {
+          alert("Form submitted successfully!");
+          document.getElementById("leadForm").reset();
+        }
       });
-    </script>
-
-
-    <script type="module" crossorigin src="/assets/index-Cxe5B8N0.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-yQSDD9MZ.css">
+    });
+  </script>
+    <script type="module" crossorigin src="/assets/index-DSGGBYX5.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Bsr2CSRR.css">
   </head>
 
 
@@ -58,23 +51,11 @@
 
   <body>
     <div id="root"></div>
-    
     <form id="leadForm">
-      <input type="text" id="first_name" placeholder="First Name" required />
-      <input type="text" id="last_name" placeholder="Last Name" required />
+      <input type="text" id="name" placeholder="Name" required />
       <input type="email" id="email" placeholder="Email" required />
-      
-      <select id="gender" required>
-        <option value="">Select Gender</option>
-        <option value="Female">Female</option>
-        <option value="Male">Male</option>
-        <option value="Other">Other</option>
-        <option value="Prefer not to say">Prefer not to say</option>
-      </select>
-    
       <button type="submit">Submit</button>
-    </form>
-
+</form>
 
   </body>
 </html>
