@@ -1,3 +1,4 @@
+import { supabase } from '../supabaseClient'; // adjust path as needed
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
@@ -14,8 +15,8 @@ interface ContactModalProps {
 
 const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     gender: ''
   });
@@ -36,11 +37,11 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.gender) {
+    if (!formData.first_name || !formData.last_name || !formData.email || !formData.gender) {
       toast({
         title: "Error",
         description: "Please fill in all fields.",
@@ -59,8 +60,22 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
       });
       return;
     }
+    
+    const { data, error } = await supabase.from("form").insert([formData]);
 
+    if (error) {
+      console.error("❌ Supabase insert error:", error.message);
+      toast({
+        title: "Error",
+        description: "Something went wrong. Try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     console.log('Form submitted:', formData);
+
+
     
     toast({
       title: "Success!",
@@ -69,8 +84,8 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
 
     // Reset form and close modal
     setFormData({
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       email: '',
       gender: ''
     });
@@ -106,14 +121,15 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
+              <Label htmlFor="first_name" className="text-sm font-medium text-gray-700">
                 First Name *
               </Label>
               <Input
-                id="firstName"
-                name="firstName"
+                id="first_name"
+                name="first_name"
+                autoComplete='given name'
                 type="text"
-                value={formData.firstName}
+                value={formData.first_name}
                 onChange={handleInputChange}
                 placeholder="John"
                 className="w-full"
@@ -121,14 +137,14 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
+              <Label htmlFor="last_name" className="text-sm font-medium text-gray-700">
                 Last Name *
               </Label>
               <Input
-                id="lastName"
-                name="lastName"
+                id="last_name"
+                name="last_name"
                 type="text"
-                value={formData.lastName}
+                value={formData.last_name}
                 onChange={handleInputChange}
                 placeholder="Doe"
                 className="w-full"
@@ -145,6 +161,7 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
               id="email"
               name="email"
               type="email"
+              autoComplete='email'
               value={formData.email}
               onChange={handleInputChange}
               placeholder="john.doe@example.com"
@@ -156,18 +173,19 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
           <div className="space-y-2">
             <Label className="text-sm font-medium text-gray-700">
               Gender *
+              <Select value={formData.gender} name="gender" onValueChange={handleGenderChange} required>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select gender" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                </SelectContent>
+              </Select>
             </Label>
-            <Select value={formData.gender} onValueChange={handleGenderChange} required>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select gender" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
-              </SelectContent>
-            </Select>
+            
           </div>
 
           <div className="flex gap-3 pt-4">
